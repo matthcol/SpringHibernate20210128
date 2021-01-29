@@ -41,7 +41,7 @@ public class Movie {
 		this.id = id;
 	}
 
-	@Column(nullable = false, length = 30)
+	@Column(nullable = false, length = 300)
 	public String getTitle() {
 		return title;
 	}
