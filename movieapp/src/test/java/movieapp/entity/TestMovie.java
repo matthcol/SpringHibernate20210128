@@ -11,9 +11,10 @@ class TestMovie {
 		Movie movie = new Movie();
 		// System.out.println(movie);
 		assertAll(
+				() -> assertNull(movie.getId(), "default movie id"),
 				() -> assertNull(movie.getTitle(), "default movie title"),
-				() -> assertEquals(0, movie.getYear(), "default movie year"),
-				() -> assertEquals(0, movie.getDuration(), "default movie duration"));
+				() -> assertEquals(null, movie.getYear(), "default movie year"),
+				() -> assertEquals(null, movie.getDuration(), "default movie duration"));
 	}
 	
 	@Test
@@ -26,6 +27,7 @@ class TestMovie {
 		Movie movie = new Movie(title, year, duration);
 		// then
 		assertAll(
+				() -> assertNull(movie.getId(), "default movie id"),
 				() -> assertEquals(title, movie.getTitle(), "movie title"),
 				() -> assertEquals(year, movie.getYear(), "movie year"),
 				() -> assertEquals(duration, movie.getDuration(), "movie duration"));
