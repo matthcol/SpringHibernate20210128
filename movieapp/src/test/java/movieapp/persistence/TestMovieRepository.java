@@ -2,8 +2,13 @@ package movieapp.persistence;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,6 +22,34 @@ class TestMovieRepository {
 	@Autowired
 	private MovieRepository movieRepository;
 	
+	@Autowired
+	private EntityManager entityManager;
+
+	@Test
+	void testFindByTitle() {
+		// giving
+		// 1 - a title of movies to read int the test  
+		String title = "The Man Who Knew Too Much";
+		// 2 - writing data in database via the entity manager
+		List<Movie> moviesDatabase = List.of(
+				new Movie(title, 1934, null),
+				new Movie(title, 1956, null),
+				new Movie("The Man Who Knew Too Little", 1997, null));
+		moviesDatabase.forEach(entityManager::persist); // SQL : insert for each movie
+		entityManager.flush();
+		// when : read from the repository
+		var moviesFound = movieRepository.findByTitle(title);
+		// then 
+		final var title2 = "Dummy";
+		assertEquals(2, moviesFound.size());
+		assertAll(moviesFound.stream().map(
+				m -> ()->assertEquals(title2, m.getTitle(), "title")));
+//		for (Movie m: moviesFound) {
+//			assertEquals(title, m.getTitle(), "title");
+//		}
+	}
+	
+	
 	@ParameterizedTest
 	@ValueSource(strings = {
 			"Z", 
@@ -29,8 +62,7 @@ class TestMovieRepository {
 		// when + then
 		saveAssertMovie(title, year, duration);
 	}
-	
-		
+			
 	@Test
 	void testSaveTitleEmptyNOK() {
 		String title = null;
@@ -49,6 +81,18 @@ class TestMovieRepository {
 		// when + then
 		saveAssertMovie(title, year, duration);
 	}
+	
+	@ParameterizedTest
+	@ValueSource(ints = { 1, 120, Integer.MAX_VALUE })
+	@NullSource
+	void testSaveDuration(Integer duration) {
+		// given
+		String title = "Blade Runner";
+		int year = 1982;
+		// when + then
+		saveAssertMovie(title, year, duration);
+	}
+	
 	
 	@Test
 	void testSaveYearNullNOK() {
