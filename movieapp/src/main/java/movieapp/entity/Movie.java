@@ -31,7 +31,7 @@ public class Movie {
 		this.duration = duration;
 	}
 	
-	@Id
+	@Id // primary key (unique + not null)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
 		return id;
@@ -58,7 +58,7 @@ public class Movie {
 		this.year = year;
 	}
 	
-	@Column(nullable = true)
+	@Column(nullable = true)  // default for nullable
 	public Integer getDuration() {
 		return duration;
 	}

@@ -11,7 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import movieapp.entity.Movie;
 
-@DataJpaTest
+@DataJpaTest // active Spring Data avec sa couche JPA Hibernate
 class TestMovieRepository {
 
 	@Autowired
@@ -30,6 +30,7 @@ class TestMovieRepository {
 		saveAssertMovie(title, year, duration);
 	}
 	
+		
 	@Test
 	void testSaveTitleEmptyNOK() {
 		String title = null;
@@ -39,6 +40,27 @@ class TestMovieRepository {
 				() -> saveAssertMovie(title, year, duration));
 	}
 	
+	@ParameterizedTest
+	@ValueSource(ints = { 1888, 1982, Integer.MAX_VALUE })
+	void testSaveYear(int year) {
+		// given
+		String title = "Blade Runner";
+		int duration = 173;
+		// when + then
+		saveAssertMovie(title, year, duration);
+	}
+	
+	@Test
+	void testSaveYearNullNOK() {
+		// given
+		String title = "Blade Runner";
+		Integer year = null;
+		int duration = 173;
+		// when + then
+		assertThrows(DataIntegrityViolationException.class,
+				() -> saveAssertMovie(title, year, duration));
+	}
+
 	private void saveAssertMovie(String title, Integer year, Integer duration) {
 		Movie movie = new Movie(title, year, duration);
 		// when
