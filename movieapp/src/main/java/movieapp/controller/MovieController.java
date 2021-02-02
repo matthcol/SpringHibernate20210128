@@ -2,6 +2,7 @@ package movieapp.controller;
 
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -63,6 +64,51 @@ public class MovieController {
 	public List<Movie> moviesByTitle(@RequestParam("t") String title) {
 		return movieRepository.findByTitle(title);
 	}
+	
+	/**
+	 * path /api/movies/byTitleYear?t=Spectre&y=2015
+	 * @param title
+	 * @param year
+	 * @return
+	 */
+	@GetMapping("/byTitleYear")
+	public List<Movie> moviesByTitleYear(
+			@RequestParam("t") String title, 
+			// @RequestParam(value="y", defaultValue = "2020") int year)
+			@RequestParam(value="y", required=false) Integer year)
+	{
+		if (Objects.isNull(year)) {
+			return movieRepository.findByTitle(title);
+		} else {
+			return movieRepository.findByTitleAndYear(title, year);
+		}
+	}
+	
+	/**
+	 * paths 
+	 * 	/api/movies/byYearRange?mi=1950&ma=1980
+	 *  /api/movies/byYearRange?mi=1950
+	 *  /api/movies/byYearRange?ma=1980
+	 */
+	@GetMapping("/byYearRange")
+	@ResponseBody
+	public List<Movie> moviesByYearRange(
+			@RequestParam(value="mi", required=false) Integer minYear,
+			@RequestParam(value="ma", required=false) Integer maxYear)
+	{
+		if (Objects.nonNull(minYear)) {
+			if (Objects.nonNull(maxYear)) {
+				return movieRepository.findByYearBetween(minYear, maxYear);
+			} else {
+				return movieRepository.findByYearGreaterThanEqual(minYear);
+			}
+		} else if (Objects.nonNull(maxYear)) {
+			return movieRepository.findByYearLessThanEqual(maxYear);
+		} else {
+			return List.of();
+		}
+	}
+	
 	
 	/**
 	 * path /api/movies

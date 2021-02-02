@@ -2,6 +2,7 @@ package movieapp.persistence;
 
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import movieapp.entity.Movie;
@@ -26,12 +27,17 @@ public interface MovieRepository extends JpaRepository<Movie, Integer>{
 	// where upper(movie0_.title) like upper(?) escape ?
 	List<Movie> findByTitleContainingIgnoreCase(String title);
 	
-	
+	// where year = 2000
+	List<Movie> findByYear(int year);
 	// where year >= 2000
-	
+	List<Movie> findByYearGreaterThanEqual(int yearMin);
+	// where year <= 2000
+	List<Movie> findByYearLessThanEqual(int yearMax);
 	// where year between 2000 and 2009
+	List<Movie> findByYearBetween(int yearMin, int yearMax);
 	
 	// where title = 'The Lion King' and year = 1994
+	List<Movie> findByTitleAndYear(String title, int year);
 	
 	// where duration is NULL
 }

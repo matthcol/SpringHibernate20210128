@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Sort;
 
 import movieapp.entity.Movie;
 
@@ -74,6 +75,31 @@ class TestMovieRepository {
 //		}
 	}
 	
+	@Test
+	void testFindByYearBetween() {
+		// giving
+		// 1 - a title of movies to read int the test  
+		final int yearMin = 1977;
+		final int yearMax = 1995;
+		// 2 - writing data in database via the entity manager
+		List<Movie> moviesDatabase = List.of(
+				new Movie("Dr No", 1962, null),
+				new Movie("Licence To Kill", 1989, null),
+				new Movie("The Spy Who Loved Me", 1977, null),
+				new Movie("GoldenEye", 1995, null),
+				new Movie("Spectre", 2015, null));
+		moviesDatabase.forEach(entityManager::persist); // SQL : insert for each movie
+		entityManager.flush();
+		// when : read from the repository
+		var moviesFound = movieRepository.findByYearBetween(yearMin, yearMax);
+		// then 
+		assertEquals(3, moviesFound.size());
+		assertAll(moviesFound.stream().map(
+			m -> ()->assertTrue(
+					(m.getYear() >= yearMin) && (m.getYear() <= yearMax),
+					 "year " + m.getYear() + " not in interval ["
+					 + yearMin + "-" +yearMax +"]")));
+	}
 	
 	@ParameterizedTest
 	@ValueSource(strings = {
