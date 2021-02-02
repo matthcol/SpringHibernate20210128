@@ -29,7 +29,7 @@ class TestMovieRepository {
 	void testFindByTitle() {
 		// giving
 		// 1 - a title of movies to read int the test  
-		String title = "The Man Who Knew Too Much";
+		final String title = "The Man Who Knew Too Much";
 		// 2 - writing data in database via the entity manager
 		List<Movie> moviesDatabase = List.of(
 				new Movie(title, 1934, null),
@@ -40,10 +40,35 @@ class TestMovieRepository {
 		// when : read from the repository
 		var moviesFound = movieRepository.findByTitle(title);
 		// then 
-		final var title2 = "Dummy";
 		assertEquals(2, moviesFound.size());
 		assertAll(moviesFound.stream().map(
-				m -> ()->assertEquals(title2, m.getTitle(), "title")));
+				m -> ()->assertEquals(title, m.getTitle(), "title")));
+//		for (Movie m: moviesFound) {
+//			assertEquals(title, m.getTitle(), "title");
+//		}
+	}
+	
+	@Test
+	void testFindByTitleContainingIgnoreCase() {
+		// giving
+		// 1 - a title of movies to read int the test  
+		final String titlePart = "mAn";
+		// 2 - writing data in database via the entity manager
+		List<Movie> moviesDatabase = List.of(
+				new Movie("The Man Who Knew Too Much", 1934, null),
+				new Movie("The Invisible Man", 2020, null),
+				new Movie("Wonder Woman 1984", 2020, null),
+				new Movie("Men In Black", 1997, null));
+		moviesDatabase.forEach(entityManager::persist); // SQL : insert for each movie
+		entityManager.flush();
+		// when : read from the repository
+		var moviesFound = movieRepository.findByTitleContainingIgnoreCase(titlePart);
+		// then 
+		assertEquals(3, moviesFound.size());
+		assertAll(moviesFound.stream().map(
+			m -> ()->assertTrue(
+					m.getTitle().toLowerCase().contains(titlePart.toLowerCase()),
+					titlePart + " not in title")));
 //		for (Movie m: moviesFound) {
 //			assertEquals(title, m.getTitle(), "title");
 //		}
