@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 
 import movieapp.entity.Movie;
 
@@ -91,7 +92,7 @@ class TestMovieRepository {
 		moviesDatabase.forEach(entityManager::persist); // SQL : insert for each movie
 		entityManager.flush();
 		// when : read from the repository
-		var moviesFound = movieRepository.findByYearBetween(yearMin, yearMax);
+		var moviesFound = movieRepository.findByYearBetweenOrderByYear(yearMin, yearMax);
 		// then 
 		assertEquals(3, moviesFound.size());
 		assertAll(moviesFound.stream().map(
@@ -100,6 +101,52 @@ class TestMovieRepository {
 					 "year " + m.getYear() + " not in interval ["
 					 + yearMin + "-" +yearMax +"]")));
 	}
+	
+	@Test
+	void testFindByYearOrderByTitle() {
+		int year = 2020;
+		List<Movie> moviesDatabase = List.of(
+				new Movie("Dr No", 1962, null),
+				new Movie("The Invisible Man", 2020, null),
+				new Movie("Wonder Woman 1984", 2020, null),
+				new Movie("Tyler Rake", 2020, null),
+				new Movie("Tenet", 2020, null),
+				new Movie("Outside the Wire", 2021, null));
+		moviesDatabase.forEach(entityManager::persist); // SQL : insert for each movie
+		entityManager.flush();
+		// when
+		var movies = movieRepository.findByYearOrderByTitle(year);
+		System.out.println(movies);
+		// TODO: assert
+	}
+	
+	@Test
+	void testFindByYearBetweenSort() {
+		List<Movie> moviesDatabase = List.of(
+				new Movie("Dr No", 1962, 110),
+				new Movie("Licence To Kill", 1989, 133),
+				new Movie("The Spy Who Loved Me", 1977, 125),
+				new Movie("GoldenEye", 1995, 130),				
+				new Movie("Spectre", 2015, 148),
+				new Movie("Octopussy", 1983, 131),
+				new Movie("Never Say Never Again", 1983, 130));
+		moviesDatabase.forEach(entityManager::persist); 
+		entityManager.flush();
+		// when
+		// order by movie0_.year asc
+		var moviesByYear = movieRepository.findByYearBetween(1960, 2020, Sort.by("year"));
+		System.out.println(moviesByYear);
+		// order by movie0_.duration desc
+		var moviesByDurationDesc = movieRepository.findByYearBetween(1960, 2020, 
+				Sort.by(Direction.DESC, "duration"));
+		System.out.println(moviesByDurationDesc);
+		// order by movie0_.duration asc, movie0_.title asc
+		var moviesByDurationTitle = movieRepository.findByYearBetween(1960, 2020, 
+				Sort.by("year", "title"));
+		System.out.println(moviesByDurationTitle);
+	}
+	
+	
 	
 	@ParameterizedTest
 	@ValueSource(strings = {

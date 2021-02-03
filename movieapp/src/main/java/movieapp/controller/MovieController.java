@@ -98,7 +98,7 @@ public class MovieController {
 	{
 		if (Objects.nonNull(minYear)) {
 			if (Objects.nonNull(maxYear)) {
-				return movieRepository.findByYearBetween(minYear, maxYear);
+				return movieRepository.findByYearBetweenOrderByYear(minYear, maxYear);
 			} else {
 				return movieRepository.findByYearGreaterThanEqual(minYear);
 			}

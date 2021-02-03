@@ -28,13 +28,14 @@ public interface MovieRepository extends JpaRepository<Movie, Integer>{
 	List<Movie> findByTitleContainingIgnoreCase(String title);
 	
 	// where year = 2000
-	List<Movie> findByYear(int year);
+	List<Movie> findByYearOrderByTitle(int year);
 	// where year >= 2000
 	List<Movie> findByYearGreaterThanEqual(int yearMin);
 	// where year <= 2000
 	List<Movie> findByYearLessThanEqual(int yearMax);
 	// where year between 2000 and 2009
-	List<Movie> findByYearBetween(int yearMin, int yearMax);
+	List<Movie> findByYearBetweenOrderByYear(int yearMin, int yearMax);
+	List<Movie> findByYearBetween(int yearMin, int yearMax, Sort sort);
 	
 	// where title = 'The Lion King' and year = 1994
 	List<Movie> findByTitleAndYear(String title, int year);
