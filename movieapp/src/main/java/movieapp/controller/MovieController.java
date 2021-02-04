@@ -185,7 +185,10 @@ public class MovieController {
 	{
 		return movieRepository.findById(idMovie)
 			.flatMap(m -> artistRepository.findById(idDirector)
-					.map(a -> {m.setDirector(a);return m;}));
+					.map(a -> {
+							m.setDirector(a);
+							return m;
+						}));
 		// SQL :
 		// - movie : select movie0_.id as id1_1_0_, movie0_.id_director as id_direc5_1_0_, movie0_.duration as duration2_1_0_, movie0_.title as title3_1_0_, movie0_.year as year4_1_0_, artist1_.id as id1_0_1_, artist1_.birthdate as birthdat2_0_1_, artist1_.deathdate as deathdat3_0_1_, artist1_.name as name4_0_1_ 
 		//		from movie movie0_ left outer join artist artist1_ on movie0_.id_director=artist1_.id 

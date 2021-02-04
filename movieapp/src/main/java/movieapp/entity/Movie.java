@@ -1,5 +1,8 @@
 package movieapp.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
@@ -22,13 +26,15 @@ public class Movie {
 	private Integer duration;
 	
 	private Artist director;
+	private List<Artist> actors;
 	
 	public Movie() {
 		super();
+		actors = new ArrayList<>(); 
 	}
 
 	public Movie(String title, Integer year, Integer duration) {
-		super();
+		this();
 		this.title = title;
 		this.year = year;
 		this.duration = duration;
@@ -79,6 +85,15 @@ public class Movie {
 
 	public void setDirector(Artist director) {
 		this.director = director;
+	}
+
+	@ManyToMany
+	public List<Artist> getActors() {
+		return actors;
+	}
+
+	public void setActors(List<Artist> actors) {
+		this.actors = actors;
 	}
 
 	@Override

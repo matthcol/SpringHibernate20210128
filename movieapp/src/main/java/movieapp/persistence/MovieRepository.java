@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import movieapp.entity.Movie;
 
@@ -41,4 +42,10 @@ public interface MovieRepository extends JpaRepository<Movie, Integer>{
 	List<Movie> findByTitleAndYear(String title, int year);
 	
 	// where duration is NULL
+	
+	// by director name
+	List<Movie> findByDirectorName(String name);
+
+	List<Movie> findByActorsName(String name);	
+	
 }
