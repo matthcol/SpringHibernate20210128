@@ -8,6 +8,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
@@ -46,5 +49,89 @@ class TestHibernateQueriesJPQL {
 			.limit(10)
 			.forEach(System.out::println);
 	}
+	
+	@ParameterizedTest
+	@ValueSource(ints = {2019, 2020, 2021})
+	void test_select_where_year(int year) {
+		System.out.println(" - Movies from year: " + year);
+		// select movie0_.id as id1_0_, movie0_.id_director as id_direc5_0_, movie0_.duration as duration2_0_, movie0_.title as title3_0_, movie0_.year as year4_0_ 
+		// from movies movie0_ where movie0_.year= :year
+		entityManager.createQuery(
+				"select m from Movie m where m.year = :year",
+				Movie.class)
+			.setParameter("year", year)
+			.getResultStream()
+			.forEach(System.out::println);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"1934,The Man Who Knew Too Much",
+		"1956,The Man Who Knew Too Much"
+	})
+	void test_select_where_title_year(int year, String title) {
+		System.out.println(" - Movies with title,year: ");
+		entityManager.createQuery(
+				"select m from Movie m where m.year = :year and m.title = :title",
+				Movie.class)
+			.setParameter("year", year)
+			.setParameter("title", title)
+			.getResultStream()
+			.forEach(System.out::println);
+	}
+	
+	
+	@Test
+	void test_select_where_year_birthdate() {
+		entityManager.createQuery(
+				"select a from Artist a where extract(year from a.birthdate) = :year",
+				Artist.class)
+			.setParameter("year", 1930)
+			.getResultStream()
+			.limit(10)
+			.forEach(System.out::println);
+	}
+	
+	// artists of age ? this year
+	@Test
+	void test_select_where_age() {
+		entityManager.createQuery(
+				"select a from Artist a where extract(year from current_date) - extract(year from a.birthdate) = :age",
+				Artist.class)
+			.setParameter("age", 30)
+			.getResultStream()
+			.limit(10)
+			.forEach(System.out::println);
+	}
+	
+	@Test
+	void test_select_movie_with_director_named() {
+		// select movie0_.id as id1_0_, movie0_.id_director as id_direc5_0_, movie0_.duration as duration2_0_, movie0_.title as title3_0_, movie0_.year as year4_0_ 
+		// from movies movie0_ inner join stars artist1_ on movie0_.id_director=artist1_.id 
+		// where artist1_.name=?
+		entityManager.createQuery(
+				"select m from Movie m join m.director a where a.name = :name",
+				Movie.class)
+			.setParameter("name", "Clint Eastwood")
+			.getResultStream()
+			.forEach(System.out::println);
+		
+	}
+	
+	@Test
+	void test_select_movie_with_actor_named() {
+		// select movie0_.id as id1_0_, movie0_.id_director as id_direc5_0_, movie0_.duration as duration2_0_, movie0_.title as title3_0_, movie0_.year as year4_0_ 
+		// from movies movie0_ inner join stars artist1_ on movie0_.id_director=artist1_.id 
+		// where artist1_.name=?
+		entityManager.createQuery(
+				"select m from Movie m join m.actors a where a.name = :name",
+				Movie.class)
+			.setParameter("name", "Clint Eastwood")
+			.getResultStream()
+			.forEach(System.out::println);
+		
+	}
+	
+	
 
 }
