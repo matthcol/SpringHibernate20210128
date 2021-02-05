@@ -95,7 +95,13 @@ class TestMovieRepositoryDirectorFind {
 	@Test
 	void testFindMovieWithActors() {
 		int idMovie = movieH.getId();
+		// select movie0_.id as id1_0_0_, movie0_.id_director as id_direc5_0_0_, movie0_.duration as duration2_0_0_, movie0_.title as title3_0_0_, movie0_.year as year4_0_0_, artist1_.id as id1_2_1_, artist1_.birthdate as birthdat2_2_1_, artist1_.deathdate as deathdat3_2_1_, artist1_.name as name4_2_1_ 
+		// from movies movie0_ left outer join stars artist1_ on movie0_.id_director=artist1_.id 
+		// where movie0_.id=?
 		var movie = movieRepository.getOne(idMovie);
+		// select actors0_.id_movie as id_movie1_1_0_, actors0_.id_actor as id_actor2_1_0_, artist1_.id as id1_2_1_, artist1_.birthdate as birthdat2_2_1_, artist1_.deathdate as deathdat3_2_1_, artist1_.name as name4_2_1_ 
+		// from play actors0_ inner join stars artist1_ on actors0_.id_actor=artist1_.id 
+		// where actors0_.id_movie=?
 		var actors = movie.getActors();
 		System.out.println("Movie: " + movie + " with actors: " + actors);
 		assertEquals(2, actors.size());
@@ -115,10 +121,14 @@ class TestMovieRepositoryDirectorFind {
 		// given
 		String name = "Clint Eastwood";
 		// when 
+		// select movie0_.id as id1_0_, movie0_.id_director as id_direc5_0_, movie0_.duration as duration2_0_, movie0_.title as title3_0_, movie0_.year as year4_0_ 
+		// from movies movie0_ left outer join play actors1_ on movie0_.id=actors1_.id_movie 
+		//		left outer join stars artist2_ on actors1_.id_actor=artist2_.id 
+		// where artist2_.name=?
 		var moviesFound  = movieRepository.findByActorsName(name);
 		// assert
 		System.out.println(moviesFound);
-		// TODO: check found 2 movies all in which Clint plays
+		// check found 2 movies all in which Clint plays
 		assertEquals(2, moviesFound.size(), "number movies");
 //		assertAll(
 //			moviesFound.stream()
