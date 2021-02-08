@@ -232,10 +232,43 @@ class TestHibernateQueriesJPQL {
 	}
 	
 	// nb movies by year (params: thresholdCount, thresholdYear) order by year/count desc
+	@Test
+	void test_movie_stat_by_year() {
+		entityManager.createQuery(
+				"select m.year, count(*) from Movie m where m.year >= :yearT group by m.year having count(*) >= :countT order by m.year",
+				Object[].class)
+			.setParameter("yearT", 1980)
+			.setParameter("countT", 20L)
+			.getResultStream()
+			.limit(10)
+			.forEach(row -> System.out.println(Arrays.toString(row)));
+	}
+	
 	// stats by director (count, min(year), max(year)) order by count desc
+	@Test
+	void test_movie_stat_by_director() {
+		entityManager.createQuery(
+				"select a, count(*), min(year), max(year) from Movie m join m.director a group by a order by count(*) desc",
+				Object[].class)
+		.getResultStream()
+		.limit(10)
+		.forEach(row -> System.out.println(Arrays.toString(row)));
+	}
+	
+	
 	// stats by actor (count, min(year), max(year)) order by count desc
+	// TODO: query and test it
 	
-	
+	@Test
+	void test_movies_recent() {
+		int deltaYear = 2;
+		var res = entityManager.createQuery(
+				"select m from Movie m where EXTRACT(YEAR FROM CURRENT_DATE) - m.year <= :deltaYear",
+				Movie.class)
+			.setParameter("deltaYear", deltaYear)
+			.getResultList();
+		System.out.println(res);
+	}
 	
 	
 	
