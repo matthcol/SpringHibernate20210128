@@ -2,9 +2,14 @@ package movieapp.persistence.hibernate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 
 import org.junit.jupiter.api.Test;
@@ -17,6 +22,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import movieapp.dto.MovieStat;
+import movieapp.dto.NameYearTitle;
 import movieapp.entity.Artist;
 import movieapp.entity.Movie;
 
@@ -121,8 +128,10 @@ class TestHibernateQueriesJPQL {
 	@Test
 	void test_select_movie_with_actor_named() {
 		// select movie0_.id as id1_0_, movie0_.id_director as id_direc5_0_, movie0_.duration as duration2_0_, movie0_.title as title3_0_, movie0_.year as year4_0_ 
-		// from movies movie0_ inner join stars artist1_ on movie0_.id_director=artist1_.id 
-		// where artist1_.name=?
+		// from movies movie0_ 
+		//		inner join play actors1_ on movie0_.id=actors1_.id_movie 
+		//		inner join stars artist2_ on actors1_.id_actor=artist2_.id 
+		// where artist2_.name=?
 		entityManager.createQuery(
 				"select m from Movie m join m.actors a where a.name = :name",
 				Movie.class)
@@ -132,6 +141,103 @@ class TestHibernateQueriesJPQL {
 		
 	}
 	
+	@Test
+	void test_movie_one_stat() {
+		// count(*)
+		TypedQuery<Long> query = entityManager.createQuery(
+			//	"select count(m) from Movie m",
+				"select count(*) from Movie m",
+				Long.class);
+		long nb_movies = query.getSingleResult();
+		System.out.println("Nb movies: " + nb_movies);
+		// min(year)
+		int min_year = entityManager.createQuery(
+				"select min(m.year) from Movie m",
+				Integer.class)
+			.getSingleResult();
+		System.out.println("year of first movie: " + min_year);
+		// sum(duration) between year1 and year2
+		long total_duration = entityManager.createQuery(
+				"select coalesce(sum(m.duration),0) from Movie m where m.year between :year1 and :year2",
+				Long.class)
+			.setParameter("year1", 2021)
+			.setParameter("year2", 2029)
+			.getSingleResult();
+		System.out.println("Total duration: " + total_duration);
+		// min(duration) between year1 and year2
+		Optional<Integer> min_duration = Optional.ofNullable(
+			entityManager.createQuery(
+				"select min(m.duration) from Movie m where m.year between :year1 and :year2",
+				Integer.class) // type erasure
+			.setParameter("year1", 2021)
+			.setParameter("year2", 2029)
+			.getSingleResult());
+		System.out.println("Min duration: " + min_duration);
+	}
 	
-
+	@Test
+	void test_movie_several_stats_as_object_array() {
+		var res = entityManager.createQuery(
+				"select count(*), min(m.year), max(m.year) from Movie m",
+				Object[].class)
+			.getSingleResult();
+		System.out.println("Movie stats: " + Arrays.toString(res)); //  + " (" + res.getClass() +")");
+		long nb_movies = (long) res[0];
+		int min_year = (int) res[1]; 
+		int max_year = (int) res[2];
+		System.out.println("Nb: " + nb_movies + " ; min: " + min_year + " ; max: " + max_year);		
+	}
+	
+	@Test
+	void test_movie_several_stats_as_tuple() {
+		var res = entityManager.createQuery(
+				"select count(*), min(m.year), max(m.year) from Movie m",
+				Tuple.class)
+			.getSingleResult();
+		System.out.println("Movie stats: " + res); //  + " (" + res.getClass() +")");
+		long nb_movies = res.get(0, Long.class);
+		int min_year = res.get(1, Integer.class); 
+		int max_year = res.get(2, Integer.class);
+		System.out.println("Nb: " + nb_movies + " ; min: " + min_year + " ; max: " + max_year);		
+	}
+	
+	@Test
+	void test_movie_several_stats_as_dto() {
+		var res = entityManager.createQuery(
+				"select new movieapp.dto.MovieStat(count(*), min(m.year), max(m.year)) from Movie m",
+				MovieStat.class)
+			.getSingleResult();
+		System.out.println("Movie stats: " + res); //  + " (" + res.getClass() +")");
+		long nb_movies = res.getCount();
+		int minYear = res.getMinYear(); 
+		int maxYear = res.getMaxYear();
+		System.out.println("Nb: " + nb_movies + " ; min: " + minYear + " ; max: " + maxYear);		
+	}
+	
+	@Test
+	void test_movie_projection() {
+		String name = "John Wayne";
+		//List<NameYearTitle> 
+		var res = entityManager.createQuery(
+				"select new movieapp.dto.NameYearTitle(a.name, m.year, m.title) from Movie m join m.actors a where a.name like :name order by m.year",
+				NameYearTitle.class)
+			.setParameter("name", name)
+			.getResultStream()
+			.limit(10)
+			.collect(Collectors.toList());
+		res.forEach(nyt -> System.out.println(nyt.getName() 
+					+ " ; " + nyt.getYear() 
+					+ " ; " + nyt.getTitle()));
+				
+	}
+	
+	// nb movies by year (params: thresholdCount, thresholdYear) order by year/count desc
+	// stats by director (count, min(year), max(year)) order by count desc
+	// stats by actor (count, min(year), max(year)) order by count desc
+	
+	
+	
+	
+	
+	
 }

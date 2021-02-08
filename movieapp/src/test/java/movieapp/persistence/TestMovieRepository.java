@@ -28,6 +28,14 @@ class TestMovieRepository {
 	private EntityManager entityManager;
 
 	@Test
+	void testCount() {
+		// TODO: write data in DB
+		long nb_movies = movieRepository.count();
+		System.out.println(nb_movies);
+		// TODO: assert nb_movies is good
+	}
+	
+	@Test
 	void testFindByTitle() {
 		// giving
 		// 1 - a title of movies to read int the test  
