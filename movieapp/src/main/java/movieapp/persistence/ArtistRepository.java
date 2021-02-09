@@ -13,6 +13,8 @@ import movieapp.dto.INameYearTitle;
 import movieapp.dto.NameYearTitle;
 import movieapp.entity.Artist;
 
+// NB: queries with projection
+// https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#projections
 public interface ArtistRepository extends JpaRepository<Artist, Integer>{
 	
 	Set<Artist> findByNameIgnoreCase(String name);
@@ -23,7 +25,7 @@ public interface ArtistRepository extends JpaRepository<Artist, Integer>{
 	
 	Stream<Artist> findByBirthdate(LocalDate birthdate);
 	
-	@Query("select a.name as name, m.year as year, m.title as title from Movie m join m.actors a where a.name like :name order by m.year")
+	@Query("select a.name as name, m.year as year, m.title as title from Movie m join m.actors a where a.name like %:name order by m.year")
 	Stream<INameYearTitle> filmographyActor(String name);
 	
 	@Query("select a.id as artistId, a.name as artistName, count(*) as count, min(year) as minYear, max(year) as maxYear from Movie m join m.director a group by a having count(*) >= :countThreshold order by count(*) desc")

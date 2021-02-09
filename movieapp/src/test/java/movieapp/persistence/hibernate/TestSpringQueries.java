@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
@@ -71,9 +72,11 @@ class TestSpringQueries {
 		System.out.println("Nb: " + nb_movies + " ; min: " + minYear + " ; max: " + maxYear);
 	}
 	
-	@Test
-	void test_filmography() {
-		String name = "Clint Eastwood";
+	@ParameterizedTest
+	@ValueSource(strings= {
+			"Clint Eastwood",
+			"Tarantino"})
+	void test_filmography(String name) {
 		artistRepository.filmographyActor(name)
 			.forEach(nyt -> System.out.println(nyt.getName() 
 					+ " ; " + nyt.getYear() 
