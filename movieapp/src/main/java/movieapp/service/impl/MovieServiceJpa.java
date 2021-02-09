@@ -1,6 +1,8 @@
 package movieapp.service.impl;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +33,21 @@ public class MovieServiceJpa implements IMovieService {
 
 	@Override
 	public List<MovieSimple> getAll() {
-		// TODO Auto-generated method stub
-		var movie = new MovieSimple();
-		movie.setTitle("Blade Runner");
-		return List.of(movie);
+		List<Movie> moviesEntity = movieRepository.findAll();
+		List<MovieSimple> moviesDto = moviesEntity.stream()
+			.map(me -> modelMapper.map(me, MovieSimple.class))
+			.collect(Collectors.toList());
+		return moviesDto;
 	}
+
+	@Override
+	public Optional<MovieSimple> getById(int id) {
+		// TODO Auto-generated method stub
+		Optional<Movie> optMovieEntity =  movieRepository.findById(id);
+		Optional<MovieSimple> optMovieDto = optMovieEntity.map(
+				me -> modelMapper.map(me, MovieSimple.class));
+		return optMovieDto;
+	}
+	
 
 }

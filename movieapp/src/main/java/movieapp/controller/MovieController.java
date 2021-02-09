@@ -45,17 +45,17 @@ public class MovieController {
 		return movieService.getAll();
 	}
 	
-//	/**
-//	 * path /api/movies/1
-//	 * @param id id of the movie to find in the repository
-//	 * @return movie with this id in the repository or Optional empty if not found
-//	 */
-//	@GetMapping("/{id}")
-//	@ResponseBody
-//	public Optional<Movie> movie(@PathVariable("id") int id) {
-//		// return new Movie("Kabir Singh", 2019, 173);
-//		return movieRepository.findById(id);
-//	}
+	/**
+	 * path /api/movies/1
+	 * @param id id of the movie to find in the repository
+	 * @return movie with this id in the repository or Optional empty if not found
+	 */
+	@GetMapping("/{id}")
+	@ResponseBody
+	public Optional<MovieSimple> movie(@PathVariable("id") int id) {
+		// return new Movie("Kabir Singh", 2019, 173);
+		return movieService.getById(id);
+	}
 //	
 //	/**
 //	 * path /api/movies/byTitle?t=Spectre
