@@ -1,0 +1,12 @@
+Exercice:
+- MovieController/MovieService:
+* post
+* getAll
+* getById
+* getByYear
+* getByTitle
+...
+* put
+* delete
+* cabler les autres queries (service/controller)
+- ArtistController/ArtistService
