@@ -22,9 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import movieapp.dto.MovieSimple;
 import movieapp.service.IMovieService;
 
-
-
-@Transactional
 @RestController
 @RequestMapping("/api/movies")
 public class MovieController {
