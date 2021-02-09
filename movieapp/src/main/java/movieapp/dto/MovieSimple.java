@@ -24,4 +24,9 @@ public class MovieSimple {
 		this.year = year;
 	}
 	
+	@Override
+	public String toString() {
+		return "MovieSimple [id=" + id + ", title=" + title + ", year=" + year + "]";
+	}
+	
 }
