@@ -35,6 +35,12 @@ class TestSpringQueries {
 			.limit(10)
 			.forEach(System.out::println);
 	}
+
+	static Stream<Arguments> rangeYearSource() {
+		return Stream.of(
+				Arguments.arguments(2010, 2019),
+				Arguments.arguments(2030, 2039));
+	}
 	
 	@ParameterizedTest
 //	@CsvSource({
@@ -56,10 +62,49 @@ class TestSpringQueries {
 		System.out.println(res);
 	}
 
-	static Stream<Arguments> rangeYearSource() {
-		return Stream.of(
-				Arguments.arguments(2010, 2019),
-				Arguments.arguments(2030, 2039));
+	@Test
+	void test_statistics() {
+		var stats = movieRepository.statistics();
+		long nb_movies = stats.getCount();
+		int minYear = stats.getMinYear(); 
+		int maxYear = stats.getMaxYear();
+		System.out.println("Nb: " + nb_movies + " ; min: " + minYear + " ; max: " + maxYear);
 	}
+	
+	@Test
+	void test_filmography() {
+		String name = "Clint Eastwood";
+		artistRepository.filmographyActor(name)
+			.forEach(nyt -> System.out.println(nyt.getName() 
+					+ " ; " + nyt.getYear() 
+					+ " ; " + nyt.getTitle()
+					+ " ; class: " + nyt.getClass()));
+	}
+	
+	@Test
+	void test_director_statistics() {
+		long threshold = 30;
+		artistRepository.statisticsByDirector(threshold)
+			.forEach(as -> System.out.println(
+					"director: " + as.getArtistId()
+					+ "#" + as.getArtistName()
+					+ " ; count: " + as.getCount()
+					+ " ; years: [" + as.getMinYear() 
+					+ "-"  + as.getMaxYear() + "]"));
+			
+	}
+	
+	@Test
+	void test_actor_statistics() {
+		long threshold = 30;
+		artistRepository.statisticsByActor(threshold)
+			.forEach(as -> System.out.println(
+					"director: " + as.getArtist()
+					+ " ; count: " + as.getCount()
+					+ " ; years: [" + as.getMinYear() 
+					+ "-"  + as.getMaxYear() + "]"));
+			
+	}
+
 	
 }

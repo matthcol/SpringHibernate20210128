@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import movieapp.dto.MovieStat;
 import movieapp.entity.Movie;
 
 // paramètres de généricité :
@@ -56,4 +57,8 @@ public interface MovieRepository extends JpaRepository<Movie, Integer>{
 	@Query("select avg(m.duration) from Movie m where m.year between :yearMin and :yearMax")
 	Optional<Double> averageDuration(int yearMin, int yearMax);
 	
+	@Query("select new movieapp.dto.MovieStat(count(*), min(m.year), max(m.year)) from Movie m")
+	MovieStat statistics();
+	
+	// "select m.year, count(*) from Movie m where m.year >= :yearT group by m.year having count(*) >= :countT order by m.year",
 }
