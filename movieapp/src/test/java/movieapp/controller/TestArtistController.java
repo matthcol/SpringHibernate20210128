@@ -60,15 +60,15 @@ class TestArtistController {
 			.willReturn(Optional.of(artistSimpleDto));
 		// 2. when/then
 		mockMvc
-			.perform(get(BASE_URI + "/" + id)
-					.accept(MediaType.APPLICATION_JSON))
-			.andDo(print())
+			.perform(get(BASE_URI + "/" + id)	// build GET HTTP request
+					.accept(MediaType.APPLICATION_JSON)) // + header request
+			.andDo(print())	// intercept request to print 
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$.id").exists())
 			.andExpect(jsonPath("$.id").value(id))
 			.andExpect(jsonPath("$.name").value(name))
-			.andExpect(jsonPath("$.birthdate").value(birthdate.toString()));
+			.andExpect(jsonPath("$.birthdate").value(birthdate.toString())); // ISO Format
 	}
 
 
