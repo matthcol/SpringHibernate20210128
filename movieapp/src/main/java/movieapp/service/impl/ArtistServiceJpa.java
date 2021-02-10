@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import movieapp.dto.ArtistSimple;
+import movieapp.entity.Artist;
 import movieapp.persistence.ArtistRepository;
 import movieapp.service.IArtistService;
 
@@ -29,8 +30,9 @@ public class ArtistServiceJpa implements IArtistService{
 
 	@Override
 	public ArtistSimple add(ArtistSimple artist) {
-		// TODO Auto-generated method stub
-		return null;
+		Artist artistEntityFromRepo = artistRepository.save(
+				modelMapper.map(artist, Artist.class));	// convert dto param to entity
+		return modelMapper.map(artistEntityFromRepo, ArtistSimple.class); // convert entity to dto result
 	}
 
 }

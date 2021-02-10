@@ -104,8 +104,8 @@ class TestArtistServiceJpa {
 			.should()
 			.save(any());
 		assertNotNull(artistSimpleDtoOut.getId());
-		assertEquals(id, artistSimpleDtoOut.getId());
-		assertEquals(name, artistSimpleDtoOut.getName());
+		assertEquals(id, artistSimpleDtoOut.getId()); // from repo response
+		assertEquals(name, artistSimpleDtoOut.getName()); 
 		assertEquals(birthdate, artistSimpleDtoOut.getBirthdate());
 	}
 }
