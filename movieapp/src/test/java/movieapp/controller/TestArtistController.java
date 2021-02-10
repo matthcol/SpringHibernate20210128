@@ -3,6 +3,7 @@ package movieapp.controller;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -69,6 +70,20 @@ class TestArtistController {
 			.andExpect(jsonPath("$.id").value(id))
 			.andExpect(jsonPath("$.name").value(name))
 			.andExpect(jsonPath("$.birthdate").value(birthdate.toString())); // ISO Format
+	}
+	
+	@Test
+	void testAdd() throws Exception {
+		// 1. given
+		String artistJsonIn = "{\"name\":\"Will Smith\", \"birthdate\":\"1968-98-25\"}";
+		
+		// 2. when/then
+		mockMvc
+			.perform(post(BASE_URI)	// build POST HTTP request
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(artistJsonIn)
+				.accept(MediaType.APPLICATION_JSON)) // + header request
+			.andDo(print());	// intercept request to print 
 	}
 
 
