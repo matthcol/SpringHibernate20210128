@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.BDDMockito.eq;
+import static org.mockito.BDDMockito.any;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -81,6 +82,31 @@ class TestArtistServiceJpa {
 			.findById(eq(id));
 		// check answer
 		assertTrue(optArtistSimpleDto.isEmpty());
+	}
+	
+	@Test
+	void testAdd() {
+		// 1. given
+		// DTO to add
+		String name = "Will Smith";
+		LocalDate birthdate = LocalDate.of(1968, 9, 25);
+		ArtistSimple artistSimpleDtoIn = new ArtistSimple(null, name, birthdate);
+		// Entity response from mock repository
+		int id = 1;
+		Artist artistEntity = new Artist(name,birthdate);
+		artistEntity.setId(id);
+		given(artistRepository.save(any()))
+			.willReturn(artistEntity);
+		// 2. when
+		ArtistSimple artistSimpleDtoOut = artistService.add(artistSimpleDtoIn);
+		// 3. then
+		then(artistRepository)
+			.should()
+			.save(any());
+		assertNotNull(artistSimpleDtoOut.getId());
+		assertEquals(id, artistSimpleDtoOut.getId());
+		assertEquals(name, artistSimpleDtoOut.getName());
+		assertEquals(birthdate, artistSimpleDtoOut.getBirthdate());
 	}
 }
 
