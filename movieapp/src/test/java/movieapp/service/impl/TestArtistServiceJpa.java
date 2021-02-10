@@ -47,9 +47,8 @@ class TestArtistServiceJpa {
 		// perfect answer from mock
 		Artist artistEntity = new Artist(name, birthdate);
 		artistEntity.setId(id);
-		Optional<Artist> optArtistEntity = Optional.of(artistEntity);
 		given(artistRepository.findById(id))
-			.willReturn(optArtistEntity);
+			.willReturn(Optional.of(artistEntity));
 		// 2. when
 		Optional<ArtistSimple> optArtistSimpleDto = artistService.getById(id);
 		// 3. then
