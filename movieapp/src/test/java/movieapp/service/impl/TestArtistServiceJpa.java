@@ -31,7 +31,7 @@ class TestArtistServiceJpa {
 	ArtistServiceJpa artistService;
 	
 	@Test
-	void testGetById() {
+	void testGetByIdPresent() {
 		// 1. given
 		int id = 1;
 		String name = "Will Smith";
@@ -57,6 +57,23 @@ class TestArtistServiceJpa {
 						() -> assertEquals(birthdate, artistSimpleDto.getBirthdate())));
 	}
 
+	@Test
+	void testGetByIdAbsent() {
+		// 1. given : id with no corresponding data in repository
+		int id = 0;
+		// perfect answer from mock
+		given(artistRepository.findById(id))
+			.willReturn(Optional.empty());
+		// 2. when
+		Optional<ArtistSimple> optArtistSimpleDto = artistService.getById(id);
+		// 3. then
+		// check mock has been called
+		then(artistRepository)
+			.should()
+			.findById(eq(id));
+		// check answer
+		assertTrue(optArtistSimpleDto.isEmpty());
+	}
 }
 
 
