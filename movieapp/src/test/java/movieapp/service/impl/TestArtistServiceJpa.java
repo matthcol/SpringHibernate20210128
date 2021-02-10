@@ -44,9 +44,11 @@ class TestArtistServiceJpa {
 		// 2. when
 		Optional<ArtistSimple> optArtistSimpleDto = artistService.getById(id);
 		// 3. then
+		// check mock has been called
 		then(artistRepository)
 			.should()
 			.findById(eq(id));
+		// check answer
 		assertTrue(optArtistSimpleDto.isPresent());
 		optArtistSimpleDto.ifPresent(
 				artistSimpleDto -> assertAll(
