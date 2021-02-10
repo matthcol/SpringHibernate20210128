@@ -14,21 +14,29 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import movieapp.dto.ArtistSimple;
 import movieapp.entity.Artist;
 import movieapp.persistence.ArtistRepository;
+import movieapp.service.IArtistService;
 
-@ExtendWith(MockitoExtension.class)
+//@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class TestArtistServiceJpa {
 
 	// layer to mock
-	@Mock
+	// @Mock : pure mockito
+	@MockBean // mock with spring IOC
 	ArtistRepository artistRepository;
 	
 	// layer to test using layer mocked
-	@InjectMocks
-	ArtistServiceJpa artistService;
+	// @InjectMocks : pure mockito
+	@Autowired
+	IArtistService artistService;
 	
 	@Test
 	void testGetByIdPresent() {
@@ -39,8 +47,9 @@ class TestArtistServiceJpa {
 		// perfect answer from mock
 		Artist artistEntity = new Artist(name, birthdate);
 		artistEntity.setId(id);
+		Optional<Artist> optArtistEntity = Optional.of(artistEntity);
 		given(artistRepository.findById(id))
-			.willReturn(Optional.of(artistEntity));
+			.willReturn(optArtistEntity);
 		// 2. when
 		Optional<ArtistSimple> optArtistSimpleDto = artistService.getById(id);
 		// 3. then
