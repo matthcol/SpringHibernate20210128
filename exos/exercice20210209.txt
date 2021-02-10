@@ -1,12 +1,12 @@
 Exercice:
+Faire la connexion entre controleur, service et repository
 - MovieController/MovieService:
-* post
-* getAll
-* getById
+# post
+# getAll
+# getById
 * getByYear
 * getByTitle
 ...
 * put
 * delete
 * cabler les autres queries (service/controller)
-- ArtistController/ArtistService

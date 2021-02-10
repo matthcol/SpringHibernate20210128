@@ -1,0 +1,8 @@
+Exercice:
+Rajouter les fonctionalités suivantes dans l'application en mode TDD
+- service: add(ArtistSimple)
+- controller : POST / add(ArtistSimple)
+- service: getByName(name)
+- controller: getByName(name)
+- service: update(ArtistSimple)
+- controller: PUT / update(ArtistSimple)
