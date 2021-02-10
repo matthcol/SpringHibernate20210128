@@ -48,6 +48,47 @@ public class MovieServiceJpa implements IMovieService {
 				me -> modelMapper.map(me, MovieSimple.class));
 		return optMovieDto;
 	}
-	
 
+	@Override
+	public Optional<MovieSimple> update(MovieSimple movie) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<MovieSimple> setDirector(int idMovie, int idDirector) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<MovieSimple> deleteMovie(MovieSimple movie) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<MovieSimple> deleteMovieById(int id) {
+		// TODO Auto-generated method stub
+		return Optional.empty();
+	}
+
+	@Override
+	public List<MovieSimple> getByTitle(String title) {
+		// TODO Auto-generated method stub
+		return List.of();
+	}
+
+	@Override
+	public List<MovieSimple> getByTitleYear(String title, Integer year) {
+		// TODO Auto-generated method stub
+		return List.of();
+	}
+
+	@Override
+	public List<MovieSimple> getByYearRange(Integer minYear, Integer maxYear) {
+		// TODO Auto-generated method stub
+		return List.of();
+	}
+	
 }
