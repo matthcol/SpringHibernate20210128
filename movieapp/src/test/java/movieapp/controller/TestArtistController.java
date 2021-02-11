@@ -76,7 +76,6 @@ class TestArtistController {
 	void testAdd() throws Exception {
 		// 1. given
 		String artistJsonIn = "{\"name\":\"Will Smith\", \"birthdate\":\"1968-98-25\"}";
-		
 		// 2. when/then
 		mockMvc
 			.perform(post(BASE_URI)	// build POST HTTP request
