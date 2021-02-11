@@ -42,6 +42,12 @@ public class ArtistServiceJpa implements IArtistService{
 		return null;
 	}
 
+	@Override
+	public Optional<ArtistSimple> update(ArtistSimple artist) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
 
 

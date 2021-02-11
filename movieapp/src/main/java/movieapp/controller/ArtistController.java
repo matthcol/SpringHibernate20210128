@@ -33,7 +33,7 @@ public class ArtistController {
 		return artistService.getById(id);
 	}
 	
-	@GetMapping("/byName")
+	@GetMapping("/byName/")
 	@ResponseBody
 	List<ArtistSimple> getById(@RequestParam("n") String name){
 		return artistService.getByName(name);

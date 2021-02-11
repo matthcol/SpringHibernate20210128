@@ -6,7 +6,12 @@ import java.util.Optional;
 import movieapp.dto.ArtistSimple;
 
 public interface IArtistService {
+	// READ
 	Optional<ArtistSimple> getById(int id);
-	ArtistSimple add(ArtistSimple artist);
 	List<ArtistSimple> getByName(String name);
+	// CREATE
+	ArtistSimple add(ArtistSimple artist);
+	// UPDATE
+	Optional<ArtistSimple> update(ArtistSimple artist);
+	
 }
