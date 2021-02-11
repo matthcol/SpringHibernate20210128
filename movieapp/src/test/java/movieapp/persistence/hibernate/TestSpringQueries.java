@@ -72,17 +72,17 @@ class TestSpringQueries {
 		System.out.println("Nb: " + nb_movies + " ; min: " + minYear + " ; max: " + maxYear);
 	}
 	
-	@ParameterizedTest
-	@ValueSource(strings= {
-			"Clint Eastwood",
-			"Tarantino"})
-	void test_filmography(String name) {
-		artistRepository.filmographyActor(name)
-			.forEach(nyt -> System.out.println(nyt.getName() 
-					+ " ; " + nyt.getYear() 
-					+ " ; " + nyt.getTitle()
-					+ " ; class: " + nyt.getClass()));
-	}
+//	@ParameterizedTest
+//	@ValueSource(strings= {
+//			"Clint Eastwood",
+//			"Tarantino"})
+//	void test_filmography(String name) {
+//		artistRepository.filmographyActor(name)
+//			.forEach(nyt -> System.out.println(nyt.getName() 
+//					+ " ; " + nyt.getYear() 
+//					+ " ; " + nyt.getTitle()
+//					+ " ; class: " + nyt.getClass()));
+//	}
 	
 	@Test
 	void test_director_statistics() {
@@ -99,14 +99,14 @@ class TestSpringQueries {
 	
 	@Test
 	void test_actor_statistics() {
-		long threshold = 30;
-		artistRepository.statisticsByActor(threshold)
-			.forEach(as -> System.out.println(
-					"director: " + as.getArtist()
-					+ " ; count: " + as.getCount()
-					+ " ; years: [" + as.getMinYear() 
-					+ "-"  + as.getMaxYear() + "]"));
-			
+//		long threshold = 30;
+//		artistRepository.statisticsByActor(threshold)
+//			.forEach(as -> System.out.println(
+//					"director: " + as.getArtist()
+//					+ " ; count: " + as.getCount()
+//					+ " ; years: [" + as.getMinYear() 
+//					+ "-"  + as.getMaxYear() + "]"));
+	
 	}
 
 	

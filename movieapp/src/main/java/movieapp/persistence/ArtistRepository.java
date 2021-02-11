@@ -25,12 +25,12 @@ public interface ArtistRepository extends JpaRepository<Artist, Integer>{
 	
 	Stream<Artist> findByBirthdate(LocalDate birthdate);
 	
-	@Query("select a.name as name, m.year as year, m.title as title from Movie m join m.actors a where a.name like %:name order by m.year")
-	Stream<INameYearTitle> filmographyActor(String name);
-	
+//	@Query("select a.name as name, m.year as year, m.title as title from Movie m join m.actors a where a.name like %:name order by m.year")
+//	Stream<INameYearTitle> filmographyActor(String name);
+//	
 	@Query("select a.id as artistId, a.name as artistName, count(*) as count, min(year) as minYear, max(year) as maxYear from Movie m join m.director a group by a having count(*) >= :countThreshold order by count(*) desc")
     Stream<IArtistStatistics> statisticsByDirector(long countThreshold);
 	
-	@Query("select new movieapp.dto.ArtistStatistics(a.id as artistId, a.name as artistName, count(*) as count, min(year) as minYear, max(year) as maxYear) from Movie m join m.actors a group by a having count(*) >= :countThreshold order by count(*) desc")
-    Stream<ArtistStatistics> statisticsByActor(long countThreshold);
+//	@Query("select new movieapp.dto.ArtistStatistics(a.id as artistId, a.name as artistName, count(*) as count, min(year) as minYear, max(year) as maxYear) from Movie m join m.actors a group by a having count(*) >= :countThreshold order by count(*) desc")
+//    Stream<ArtistStatistics> statisticsByActor(long countThreshold);
 }

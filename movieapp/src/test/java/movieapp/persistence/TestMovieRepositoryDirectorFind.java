@@ -116,32 +116,32 @@ class TestMovieRepositoryDirectorFind {
 		assertEquals(0, actors.size());
 	}
 	
-	@Test
-	void testFindByActor() {
-		// given
-		String name = "Clint Eastwood";
-		// when 
-		// select movie0_.id as id1_0_, movie0_.id_director as id_direc5_0_, movie0_.duration as duration2_0_, movie0_.title as title3_0_, movie0_.year as year4_0_ 
-		// from movies movie0_ left outer join play actors1_ on movie0_.id=actors1_.id_movie 
-		//		left outer join stars artist2_ on actors1_.id_actor=artist2_.id 
-		// where artist2_.name=?
-		var moviesFound  = movieRepository.findByActorsName(name);
-		// assert
-		System.out.println(moviesFound);
-		// check found 2 movies all in which Clint plays
-		assertEquals(2, moviesFound.size(), "number movies");
-//		assertAll(
-//			moviesFound.stream()
-//				.map(Movie::getActors)
-//				.map(Artist::getName)
-//				.map(n -> () -> assertEquals(name, n, "director name")));
-		for (var m: moviesFound) {
-			var actors = m.getActors();
-			assertTrue(
-					actors.stream()
-						.anyMatch(a -> a.getName().equals(name)),
-					"at least one actor named clint eastwood");
-		}
-	}
+//	@Test
+//	void testFindByActor() {
+//		// given
+//		String name = "Clint Eastwood";
+//		// when 
+//		// select movie0_.id as id1_0_, movie0_.id_director as id_direc5_0_, movie0_.duration as duration2_0_, movie0_.title as title3_0_, movie0_.year as year4_0_ 
+//		// from movies movie0_ left outer join play actors1_ on movie0_.id=actors1_.id_movie 
+//		//		left outer join stars artist2_ on actors1_.id_actor=artist2_.id 
+//		// where artist2_.name=?
+//		var moviesFound  = movieRepository.findByActorsName(name);
+//		// assert
+//		System.out.println(moviesFound);
+//		// check found 2 movies all in which Clint plays
+//		assertEquals(2, moviesFound.size(), "number movies");
+////		assertAll(
+////			moviesFound.stream()
+////				.map(Movie::getActors)
+////				.map(Artist::getName)
+////				.map(n -> () -> assertEquals(name, n, "director name")));
+//		for (var m: moviesFound) {
+//			var actors = m.getActors();
+//			assertTrue(
+//					actors.stream()
+//						.anyMatch(a -> a.getName().equals(name)),
+//					"at least one actor named clint eastwood");
+//		}
+//	}
 			
 }
