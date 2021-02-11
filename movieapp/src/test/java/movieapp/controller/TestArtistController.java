@@ -2,6 +2,8 @@ package movieapp.controller;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -48,6 +50,10 @@ class TestArtistController {
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$").doesNotExist());
+		// check mock service has been called
+				then(artistService)
+					.should()
+					.getById(eq(id));
 	}
 	
 	@Test
@@ -70,19 +76,40 @@ class TestArtistController {
 			.andExpect(jsonPath("$.id").value(id))
 			.andExpect(jsonPath("$.name").value(name))
 			.andExpect(jsonPath("$.birthdate").value(birthdate.toString())); // ISO Format
+		// check mock service has been called
+		then(artistService)
+			.should()
+			.getById(eq(id));
 	}
 	
 	@Test
 	void testAdd() throws Exception {
 		// 1. given
-		String artistJsonIn = "{\"name\":\"Will Smith\", \"birthdate\":\"1968-98-25\"}";
+		// properties for json
+		String name = "Will Smith";
+		LocalDate birthdate = LocalDate.of(1968, 9, 25);
+		String artistJsonIn = JsonProvider.artistJson(name, birthdate);
+		// perfect response from mock service
+		int id = 1;
+		given(artistService.add(any()))
+				.willReturn(new ArtistSimple(id, name, birthdate));
 		// 2. when/then
 		mockMvc
 			.perform(post(BASE_URI)	// build POST HTTP request
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(artistJsonIn)
 				.accept(MediaType.APPLICATION_JSON)) // + header request
-			.andDo(print());	// intercept request to print 
+			.andDo(print())	// intercept request to print
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$.id").exists())
+			.andExpect(jsonPath("$.id").value(id))
+			.andExpect(jsonPath("$.name").value(name))
+			.andExpect(jsonPath("$.birthdate").value(birthdate.toString())); // ISO Format
+		// check mock service has been called
+		then(artistService)
+			.should()
+			.add(any());
 	}
 
 
