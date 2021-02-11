@@ -12,10 +12,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -24,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import movieapp.dto.ArtistSimple;
+import movieapp.entity.Artist;
 import movieapp.service.IArtistService;
 
 @WebMvcTest(ArtistController.class) // controller to test with MockMvc client
@@ -80,6 +84,40 @@ class TestArtistController {
 		then(artistService)
 			.should()
 			.getById(eq(id));
+	}
+	
+	@Test
+	void testGetByName() throws Exception {
+		// 1. given
+		int nbArtist = 3;
+		String name = "McQueen";
+		List<ArtistSimple> artistsFromService = List.of(
+				new ArtistSimple(1, "Steve McQueen", LocalDate.of(1930, 3, 24)),
+				new ArtistSimple(2, "Steve McQueen", LocalDate.of(1969, 10, 9)),
+				new ArtistSimple(3, "Steven R. McQueen", null));
+		given(artistService.getByName(eq(name)))
+			.willReturn(artistsFromService);
+		// 2. when/then
+		mockMvc
+			.perform(get(BASE_URI + "/byName")	// build GET HTTP request
+					.queryParam("n", name)
+					.accept(MediaType.APPLICATION_JSON)) // + header request
+			.andDo(print())	// intercept request to print 
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$").isArray())
+			.andExpect(jsonPath("$", Matchers.hasSize(3)))
+			.andExpect(
+					jsonPath("$[*].name", 
+							Matchers.everyItem(
+									//Matchers.is("Steve McQueen")
+									Matchers.endsWithIgnoringCase(name)
+									)
+					//jsonPath("$[0].name", Matchers.is("Steve McQueen")
+					));
+		then(artistService)
+			.should()
+			.getByName(eq(name));
 	}
 	
 	@Test

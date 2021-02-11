@@ -1,5 +1,6 @@
 package movieapp.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
@@ -33,6 +34,12 @@ public class ArtistServiceJpa implements IArtistService{
 		Artist artistEntityFromRepo = artistRepository.save(
 				modelMapper.map(artist, Artist.class));	// convert dto param to entity
 		return modelMapper.map(artistEntityFromRepo, ArtistSimple.class); // convert entity to dto result
+	}
+
+	@Override
+	public List<ArtistSimple> getByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
