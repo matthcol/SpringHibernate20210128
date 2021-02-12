@@ -5,7 +5,10 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -29,6 +32,9 @@ public class Movie {
 	private String title;
 	private Integer year;
 	private Integer duration;
+	private ImageColor imageColor;
+	
+	private List<String> genres;
 	
 	private Artist director;
 	private List<Artist> actors;
@@ -83,6 +89,27 @@ public class Movie {
 		this.duration = duration;
 	}
 	
+	@Enumerated(EnumType.STRING) // ORDINAL or STRING
+	@Column(name="color")
+	public ImageColor getImageColor() {
+		return imageColor;
+	}
+
+	public void setImageColor(ImageColor imageColor) {
+		this.imageColor = imageColor;
+	}
+
+	// create table movie_genres (movie_id integer not null, genre varchar(255))
+	@ElementCollection
+	@Column(name="genre")
+	public List<String> getGenres() {
+		return genres;
+	}
+
+	public void setGenres(List<String> genres) {
+		this.genres = genres;
+	}
+
 	// @Transient
 	@ManyToOne(fetch = FetchType.LAZY) // EAGER by default 
 		// (cascade=CascadeType.PERSIST)
