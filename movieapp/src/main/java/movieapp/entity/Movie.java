@@ -107,7 +107,7 @@ public class Movie {
 		this.actors = actors;
 	}
 	
-	@OneToMany(mappedBy="movie")
+	@OneToMany(mappedBy="movie")	// mapping in property movie of entity Play
 	public List<Play> getPlays() {
 		return plays;
 	}
