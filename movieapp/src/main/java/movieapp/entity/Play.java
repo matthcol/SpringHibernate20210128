@@ -17,6 +17,17 @@ public class Play {
 	private Artist actor;
 	private String role;
 	
+	public Play(Movie movie, Artist actor, String role) {
+		super();
+		this.movie = movie;
+		this.actor = actor;
+		this.role = role;
+	}
+	
+	public Play() {
+		super();
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer getId() {
@@ -51,7 +62,5 @@ public class Play {
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
-	
 	
 }
