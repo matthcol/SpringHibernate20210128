@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -83,7 +84,8 @@ public class Movie {
 	}
 	
 	// @Transient
-	@ManyToOne // (cascade=CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY) // EAGER by default 
+		// (cascade=CascadeType.PERSIST)
 	@JoinColumn(name="id_director", nullable=true)
 	public Artist getDirector() {
 		return director;
