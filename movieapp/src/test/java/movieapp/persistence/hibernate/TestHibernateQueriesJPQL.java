@@ -133,7 +133,9 @@ class TestHibernateQueriesJPQL {
 		//		inner join stars artist2_ on actors1_.id_actor=artist2_.id 
 		// where artist2_.name=?
 		entityManager.createQuery(
-				"select m from Movie m join m.actors a where a.name = :name",
+				 "select m from Movie m join m.plays p join p.actor a "
+				// "select m from Play p join p.movie m join p.actor a "
+				+ "where a.name = :name",
 				Movie.class)
 			.setParameter("name", "Clint Eastwood")
 			.getResultStream()
@@ -270,7 +272,36 @@ class TestHibernateQueriesJPQL {
 		System.out.println(res);
 	}
 	
+	// 1. trouver les acteurs qui ont joués James Bond -> (Artist)
+	// 2. trouver les acteurs, titre film où ils ont joués James Bond -> (projection)
+	@Test
+	void test_actors_playing_role() {
+		String role = "James Bond";
+		var actors = entityManager.createQuery(
+				"select distinct a from Play p join p.actor a where p.role like :role", 
+				Artist.class)
+			.setParameter("role", role)
+			.getResultList();
+		System.out.println("Actors playing " + role +": " + actors);
+	}
 	
+	@Test
+	void test_actors_playing_role_count_min_max_year() {
+		String role = "James Bond";
+		var res = entityManager.createQuery(
+				  " select a.name as name, count(*) as nb_movies, "
+				+ " min(m.year) as min_year, max(m.year) as max_year "
+				+ " from Play p join p.actor a join p.movie m "
+				+ " where p.role like :role "
+				+ " group by a "
+			//	+ "order by nb_movies desc", 
+				+ " order by min(year)",
+				Object[].class) // Tuple.class
+			.setParameter("role", role)
+			.getResultList();
+		System.out.println("Actors playing " + role +": ");
+		res.forEach(row -> System.out.println(Arrays.toString(row)));
+	}
 	
 	
 }

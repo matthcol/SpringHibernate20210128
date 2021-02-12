@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import movieapp.entity.Movie;
 import movieapp.persistence.ArtistRepository;
 import movieapp.persistence.MovieRepository;
+import movieapp.persistence.PlayRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -28,6 +29,9 @@ class TestSpringQueries {
 	
 	@Autowired
 	MovieRepository movieRepository;
+	
+	@Autowired
+	PlayRepository playRepository;
 	
 	@Test
 	void test_artists_by_birthdate_year() {
@@ -83,6 +87,21 @@ class TestSpringQueries {
 //					+ " ; " + nyt.getTitle()
 //					+ " ; class: " + nyt.getClass()));
 //	}
+	
+	@Test
+	void test_findByPlaysActorName() {
+		String name = "Pierce Brosnan";
+		var movies = movieRepository.findByPlaysActorName(name);
+		System.out.println(movies);
+	}
+	
+	@ParameterizedTest
+	@ValueSource(strings={"Pierce Brosnan", "Sean Connery"})
+	void test_findByActorName(String name) {
+		var plays = playRepository.findByActorName(name);
+		plays.forEach(
+				p -> System.out.println(p.getMovie() + ": " + p.getRole()));
+	}
 	
 	@Test
 	void test_director_statistics() {
