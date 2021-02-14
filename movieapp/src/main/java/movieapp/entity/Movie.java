@@ -1,15 +1,21 @@
 package movieapp.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +24,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -33,7 +40,7 @@ public class Movie {
 	private Integer year;
 	private Integer duration;
 	private Language language;
-	private List<String> genres;
+	private Set<String> genres;
 	private Map<Language, String> titles;
 	
 	private Artist director;
@@ -41,7 +48,9 @@ public class Movie {
 	
 	public Movie() {
 		super();
-		actors = new ArrayList<>(); 
+		actors = new ArrayList<>();
+		genres = new HashSet<>();
+		titles = new HashMap<>();
 	}
 
 	public Movie(String title, Integer year, Integer duration) {
@@ -96,17 +105,24 @@ public class Movie {
 		this.language = language;
 	}
 
-	@ElementCollection
-	public List<String> getGenres() {
+	@ElementCollection (fetch = FetchType.EAGER)
+	@CollectionTable(name="movies_genres", 
+		joinColumns = @JoinColumn(name="id_movie", nullable = false))
+	@Column(name="genre", nullable = false)
+	public Set<String> getGenres() {
 		return genres;
 	}
 
-	public void setGenres(List<String> genres) {
+	public void setGenres(Set<String> genres) {
 		this.genres = genres;
 	}
 
-	@ElementCollection
+	// NB: (id_movie, lang) is the primary key  
+	@ElementCollection (fetch = FetchType.EAGER)  
+	@CollectionTable(name="movies_all_titles", 
+		joinColumns = @JoinColumn(name="id_movie"))
 	@MapKeyColumn(name = "lang")
+	@MapKeyEnumerated(EnumType.STRING)
     @Column(name = "title")
 	public Map<Language, String> getTitles() {
 		return titles;
@@ -116,8 +132,8 @@ public class Movie {
 		this.titles = titles;
 	}
 
-	// @Transient
-	@ManyToOne // (cascade=CascadeType.PERSIST)
+	// optional director
+	@ManyToOne 
 	@JoinColumn(name="id_director", nullable=true)
 	public Artist getDirector() {
 		return director;
@@ -140,9 +156,9 @@ public class Movie {
 		this.actors = actors;
 	}
 
+	// NB: never put associations in this method to keep fetch lazy/eager setting 
 	@Override
 	public String toString() {
-		// return title + "(" + year + "," + duration + ")";
 		StringBuilder builder = new StringBuilder();
 		return builder.append(title)
 			.append("(")
