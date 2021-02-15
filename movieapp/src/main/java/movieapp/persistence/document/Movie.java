@@ -19,7 +19,7 @@ import lombok.ToString;
 @RequiredArgsConstructor(staticName = "of") // uniqt non null attributes
 @Builder
 @ToString
-@Document(collection = "movies")
+@Document(collection  = "movies")
 public class Movie {
 	@Getter @Setter @Id
 	private String id;
