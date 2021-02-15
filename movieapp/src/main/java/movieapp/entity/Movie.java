@@ -27,6 +27,7 @@ public class Movie {
 	private String title;
 	private Integer year;
 	private Integer duration;
+	private String synopsis;
 	
 	private Artist director;
 	private List<Artist> actors;
@@ -79,6 +80,14 @@ public class Movie {
 		this.duration = duration;
 	}
 	
+	public String getSynopsis() {
+		return synopsis;
+	}
+
+	public void setSynopsis(String synopsis) {
+		this.synopsis = synopsis;
+	}
+
 	// @Transient
 	@ManyToOne // (cascade=CascadeType.PERSIST)
 	@JoinColumn(name="id_director", nullable=true)

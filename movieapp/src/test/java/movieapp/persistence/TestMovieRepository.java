@@ -11,14 +11,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.test.context.ActiveProfiles;
 
 import movieapp.entity.Movie;
 
 @DataJpaTest // active Spring Data avec sa couche JPA Hibernate
+//@AutoConfigureTestDatabase(replace = Replace.NONE) // deactivate H2 +
+//@ActiveProfiles("test") // + DB from application-test.properties
 class TestMovieRepository {
 
 	@Autowired
