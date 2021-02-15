@@ -27,7 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import movieapp.dto.ArtistSimple;
-import movieapp.entity.Artist;
 import movieapp.service.IArtistService;
 
 @WebMvcTest(ArtistController.class) // controller to test with MockMvc client
