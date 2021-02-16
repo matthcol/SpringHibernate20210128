@@ -1,0 +1,35 @@
+Atelier fin de stage:
+---------------------
+L'objectif est d'ajouter la notion de franchise de films.
+Par exemple les James Bond, Rocky, Rambo, Lord of the Rings, Star Wars.
+
+1. Modélisation:
+Un franchise sera représentée par son nom et sa description. 
+Une franchise contient un certain nombre de films. 
+Un film appartient à une seule franchise (ou aucune)
+Exemple:
+- La franchise Rocky contient les films :
+	* Rocky
+	* Rocky II
+	* Rocky III
+	* Rocky IV
+	* Rocky V
+	* Rocky Balboa
+	* Creed
+	* Creed II
+	
+2. Repository:
+En plus du CRUD classique, on ajoutera les requêtes suivantes:
+- franchise(s) par leur nom (partiel, insensible à la casse)
+- films par nom de franchise (ou par id de la franchise)
+- acteurs ayant joué dans tous les films de la franchise
+Ecrire les tests unitaires du repository.
+
+3. Ajouter un controleur et un service pour gérer le CRUD sur tout
+ce qui est franchise en se concentrant sur:
+- liste des franchises
+- ajout franchise
+- ajout d'un film dans une franchise
+- 3 requêtes spécialisées du point 2
+Ecrire les tests unitaires du controleur et du service
+
