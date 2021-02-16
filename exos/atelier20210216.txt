@@ -4,7 +4,7 @@ L'objectif est d'ajouter la notion de franchise de films.
 Par exemple les James Bond, Rocky, Rambo, Lord of the Rings, Star Wars.
 
 1. Modélisation:
-Un franchise sera représentée par son nom et sa description. 
+Une franchise sera représentée par son nom et sa description. 
 Une franchise contient un certain nombre de films. 
 Un film appartient à une seule franchise (ou aucune)
 Exemple:
@@ -27,6 +27,7 @@ Ecrire les tests unitaires du repository.
 
 3. Ajouter un controleur et un service pour gérer le CRUD sur tout
 ce qui est franchise en se concentrant sur:
+- une franchise par son id (si existe)
 - liste des franchises
 - ajout franchise
 - ajout d'un film dans une franchise
