@@ -23,6 +23,8 @@ En plus du CRUD classique, on ajoutera les requêtes suivantes:
 - franchise(s) par leur nom (partiel, insensible à la casse)
 - films par nom de franchise (ou par id de la franchise)
 - acteurs ayant joué dans tous les films de la franchise
+( ou plus simple:
+	acteurs et nombres de films joués pour une franchise donnée (id))
 Ecrire les tests unitaires du repository.
 
 3. Ajouter un controleur et un service pour gérer le CRUD sur tout
@@ -33,4 +35,28 @@ ce qui est franchise en se concentrant sur:
 - ajout d'un film dans une franchise
 - 3 requêtes spécialisées du point 2
 Ecrire les tests unitaires du controleur et du service
+
+NB: requêtes SQL pour les acteurs ayant joués dans les films d'une franchise
+------
+* compte le nb de films par acteurs d'une franchise
+
+select a.*, count(*) nb_movies	
+from stars a join play p on a.id = p.id_actor
+	join movies m on p.id_movie = m.id
+	join franchise f on m.id_franchise = f.id
+where f.id = 1 
+group by a.id
+order by nb_movies desc;
+
+* acteurs ayant joué dans tous les films de la franchise
+select a.*
+from stars a
+where not exists (
+	select * from movies m join franchise f on m.id_franchise =f.id
+	where f.id = 1
+	and not exists (
+		select * from play p
+		where p.id_actor = a.id
+			and p.id_movie = m.id));
+
 
