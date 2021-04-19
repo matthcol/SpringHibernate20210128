@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import movieapp.persistence.entity.Artist;
+
 class TestArtist {
 
 	// TODO : unit tests of the java bean

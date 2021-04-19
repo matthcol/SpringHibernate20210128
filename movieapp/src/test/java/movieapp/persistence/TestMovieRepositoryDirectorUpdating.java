@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import movieapp.entity.Artist;
-import movieapp.entity.Movie;
+import movieapp.persistence.entity.Artist;
+import movieapp.persistence.entity.Movie;
+import movieapp.persistence.repository.ArtistRepository;
+import movieapp.persistence.repository.MovieRepository;
 
 @DataJpaTest
 class TestMovieRepositoryDirectorUpdating {

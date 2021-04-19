@@ -13,5 +13,6 @@ public interface IArtistService {
 	ArtistSimple add(ArtistSimple artist);
 	// UPDATE
 	Optional<ArtistSimple> update(ArtistSimple artist);
-	
+	// DELETE
+	Optional<ArtistSimple> delete(int id);
 }

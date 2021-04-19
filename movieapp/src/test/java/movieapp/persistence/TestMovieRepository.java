@@ -1,8 +1,10 @@
 package movieapp.persistence;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static testing.Assertions.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
@@ -14,12 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.ActiveProfiles;
 
-import movieapp.entity.Movie;
+import movieapp.persistence.entity.Movie;
+import movieapp.persistence.provider.MovieProvider;
+import movieapp.persistence.repository.MovieRepository;
+import testing.persistence.DatabaseUtils;
 
 @DataJpaTest // active Spring Data avec sa couche JPA Hibernate
 //@AutoConfigureTestDatabase(replace = Replace.NONE) // deactivate H2 +
@@ -30,7 +36,7 @@ class TestMovieRepository {
 	private MovieRepository movieRepository;
 	
 	@Autowired
-	private EntityManager entityManager;
+	private TestEntityManager entityManager;
 
 	@Test
 	void testCount() {
@@ -43,76 +49,86 @@ class TestMovieRepository {
 	@Test
 	void testFindByTitle() {
 		// giving
-		// 1 - a title of movies to read int the test  
-		final String title = "The Man Who Knew Too Much";
+		// 1 - a title of movies to read in the test  
+		var title = "The Man Who Knew Too Much";
+		var otherTitle = "The Man Who Knew Too Little";
+		var goodTitles = List.of(title, title);
+		var goodYears = List.of(1934, 1956);
 		// 2 - writing data in database via the entity manager
-		List<Movie> moviesDatabase = List.of(
-				new Movie(title, 1934, null),
-				new Movie(title, 1956, null),
-				new Movie("The Man Who Knew Too Little", 1997, null));
-		moviesDatabase.forEach(entityManager::persist); // SQL : insert for each movie
-		entityManager.flush();
+		var moviesDatabase = MovieProvider.moviesGoodOnesOneBad(
+				goodTitles, goodYears, otherTitle, 1997);
+		DatabaseUtils.insertDataFlushAndClearCache(entityManager, moviesDatabase);
 		// when : read from the repository
-		var moviesFound = movieRepository.findByTitle(title);
+		var moviesFound = movieRepository.findByTitle(title)
+				.collect(Collectors.toList());
+		var movieTitlesFound = moviesFound.stream()
+				.map(Movie::getTitle)
+				.collect(Collectors.toList());
+		var movieYearsFound = moviesFound.stream()
+				.map(Movie::getYear)
+				.collect(Collectors.toList());
+		System.out.println(moviesFound);
+		System.out.println(movieTitlesFound);
+		System.out.println(movieYearsFound);
 		// then 
-		assertEquals(2, moviesFound.size());
-		assertAll(moviesFound.stream().map(
-				m -> ()->assertEquals(title, m.getTitle(), "title")));
-//		for (Movie m: moviesFound) {
-//			assertEquals(title, m.getTitle(), "title");
-//		}
+		assertSizeEquals(goodTitles, movieTitlesFound, "number of titles");
+		assertAllEquals(title, movieTitlesFound, "title");
+		assertCollectionUniqueElementEquals(goodYears, movieYearsFound, "year");
 	}
 	
 	@Test
 	void testFindByTitleContainingIgnoreCase() {
 		// giving
-		// 1 - a title of movies to read int the test  
-		final String titlePart = "mAn";
+		// 1 - a title of movies to find in the database  
+		var titlePart = "mAn";
 		// 2 - writing data in database via the entity manager
-		List<Movie> moviesDatabase = List.of(
-				new Movie("The Man Who Knew Too Much", 1934, null),
-				new Movie("The Invisible Man", 2020, null),
-				new Movie("Wonder Woman 1984", 2020, null),
-				new Movie("Men In Black", 1997, null));
-		moviesDatabase.forEach(entityManager::persist); // SQL : insert for each movie
-		entityManager.flush();
+		var titlesContaingWord = List.of(
+				"The Man Who Knew Too Much",
+				"The Invisible Man", 
+				"Wonder Woman 1984");
+		var moviesDatabase = MovieProvider.moviesGoodOnesOneBad(
+				titlesContaingWord,
+				List.of(1934, 2020, 2020),
+				"Men In Black", 1997);
+		DatabaseUtils.insertDataFlushAndClearCache(entityManager, moviesDatabase);
 		// when : read from the repository
-		var moviesFound = movieRepository.findByTitleContainingIgnoreCase(titlePart);
+		var movieTitlesFound = movieRepository.findByTitleContainingIgnoreCase(titlePart)
+				.map(Movie::getTitle)
+				.collect(Collectors.toList());
 		// then 
-		assertEquals(3, moviesFound.size());
-		assertAll(moviesFound.stream().map(
-			m -> ()->assertTrue(
-					m.getTitle().toLowerCase().contains(titlePart.toLowerCase()),
-					titlePart + " not in title")));
-//		for (Movie m: moviesFound) {
-//			assertEquals(title, m.getTitle(), "title");
-//		}
+		var titlePartLowerCase = titlePart.toLowerCase();
+		assertSizeEquals(titlesContaingWord, movieTitlesFound, "number of movies");
+		assertAllTrue(
+				movieTitlesFound, 
+				t -> t.toLowerCase().contains(titlePartLowerCase),
+				t -> titlePartLowerCase + " not in title " + t);
 	}
 	
 	@Test
 	void testFindByYearBetween() {
 		// giving
 		// 1 - a title of movies to read int the test  
-		final int yearMin = 1977;
-		final int yearMax = 1995;
+		var yearMin = 1977;
+		var yearMax = 1995;
 		// 2 - writing data in database via the entity manager
-		List<Movie> moviesDatabase = List.of(
-				new Movie("Dr No", 1962, null),
-				new Movie("Licence To Kill", 1989, null),
-				new Movie("The Spy Who Loved Me", 1977, null),
-				new Movie("GoldenEye", 1995, null),
-				new Movie("Spectre", 2015, null));
-		moviesDatabase.forEach(entityManager::persist); // SQL : insert for each movie
-		entityManager.flush();
+		var goodTitles = List.of(
+				"GoldenEye", "Licence To Kill", "The Spy Who Loved Me"); 
+		var moviesDatabase = List.of(
+				new Movie("Dr No", 1962, null), // nok
+				new Movie("Licence To Kill", 1989, null), // ok
+				new Movie("The Spy Who Loved Me", 1977, null), // ok
+				new Movie("GoldenEye", 1995, null), // ok
+				new Movie("Spectre", 2015, null)); // nok
+		DatabaseUtils.insertDataFlushAndClearCache(entityManager, moviesDatabase);
 		// when : read from the repository
-		var moviesFound = movieRepository.findByYearBetweenOrderByYear(yearMin, yearMax);
+		var moviesFound = movieRepository.findByYearBetweenOrderByYear(yearMin, yearMax)
+				.collect(Collectors.toList());
 		// then 
-		assertEquals(3, moviesFound.size());
-		assertAll(moviesFound.stream().map(
-			m -> ()->assertTrue(
-					(m.getYear() >= yearMin) && (m.getYear() <= yearMax),
-					 "year " + m.getYear() + " not in interval ["
-					 + yearMin + "-" +yearMax +"]")));
+		assertSizeEquals(goodTitles, moviesFound, "number of movies");
+		assertAllTrue(moviesFound,
+			m -> (m.getYear() >= yearMin) && (m.getYear() <= yearMax),
+			m -> "year " + m.getYear() + " not in interval ["
+					 + yearMin + "-" +yearMax +"]");
 	}
 	
 	@Test

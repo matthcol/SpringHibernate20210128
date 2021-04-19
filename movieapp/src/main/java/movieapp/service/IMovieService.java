@@ -2,22 +2,31 @@ package movieapp.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import movieapp.dto.IMovieStatistics;
+import movieapp.dto.IMovieYearCount;
+import movieapp.dto.MovieDetail;
+import movieapp.dto.MovieDetailDirectorActors;
 import movieapp.dto.MovieSimple;
 
 public interface IMovieService {
 	// CREATE
-	MovieSimple add(MovieSimple movie);
+	MovieDetail add(MovieDetail movie);
 	// UPDATE
-	Optional<MovieSimple> update(MovieSimple movie);
-	Optional<MovieSimple> setDirector(int idMovie, int idDirector);
+	Optional<MovieDetail> update(MovieDetail movie);
+	Optional<MovieDetailDirectorActors> setDirector(int idMovie, int idDirector);
+	Optional<MovieDetailDirectorActors> setActors(int idMovie, List<Integer> idActors);
 	// DELETE
-	Optional<MovieSimple> deleteMovie(MovieSimple movie);
-	Optional<MovieSimple> deleteMovieById(int id);
+	Optional<MovieDetail> deleteMovieById(int id);
 	// READ
-	Optional<MovieSimple> getById(int id);
+	Optional<MovieDetailDirectorActors> getById(int id);
 	List<MovieSimple> getAll();
 	List<MovieSimple> getByTitle(String title);
-	List<MovieSimple> getByTitleYear(String title, Integer year);
-	List<MovieSimple> getByYearRange(Integer minYear, Integer maxYear);
+	List<MovieSimple> getByTitleYear(String title, int year);
+	List<MovieSimple> getByYearRange(int minYear, int maxYear);
+	List<MovieSimple> getByYearLess(int maxYear);
+	List<MovieSimple> getByYearGreater(int minYear);
+	IMovieStatistics getStatistics();
+	List<IMovieYearCount> getCountMovieByYear(int yearMin, int CountMin);
 }

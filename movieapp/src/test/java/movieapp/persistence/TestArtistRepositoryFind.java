@@ -13,7 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import movieapp.entity.Artist;
+import movieapp.persistence.entity.Artist;
+import movieapp.persistence.repository.ArtistRepository;
 
 @DataJpaTest
 public class TestArtistRepositoryFind {

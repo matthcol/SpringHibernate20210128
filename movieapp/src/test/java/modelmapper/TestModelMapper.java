@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
 import movieapp.dto.MovieSimple;
-import movieapp.entity.Movie;
+import movieapp.persistence.entity.Movie;
 
 class TestModelMapper {
 	static ModelMapper modelMapper;

@@ -12,8 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import movieapp.entity.Artist;
-import movieapp.entity.Movie;
+import movieapp.persistence.entity.Artist;
+import movieapp.persistence.entity.Movie;
+import movieapp.persistence.repository.MovieRepository;
 
 @DataJpaTest
 class TestMovieRepositoryDirectorFind {
@@ -80,7 +81,7 @@ class TestMovieRepositoryDirectorFind {
 		// given
 		String name = "Clint Eastwood";
 		// when 
-		var moviesFound  = movieRepository.findByDirectorName(name);
+		var moviesFound  = movieRepository.findByDirectorNameOrderByYearDesc(name);
 		// assert
 		System.out.println(moviesFound);
 		// TODO: check found 3 movies all directed by Clint
@@ -125,7 +126,7 @@ class TestMovieRepositoryDirectorFind {
 		// from movies movie0_ left outer join play actors1_ on movie0_.id=actors1_.id_movie 
 		//		left outer join stars artist2_ on actors1_.id_actor=artist2_.id 
 		// where artist2_.name=?
-		var moviesFound  = movieRepository.findByActorsName(name);
+		var moviesFound  = movieRepository.findByActorsNameOrderByYearDesc(name);
 		// assert
 		System.out.println(moviesFound);
 		// check found 2 movies all in which Clint plays

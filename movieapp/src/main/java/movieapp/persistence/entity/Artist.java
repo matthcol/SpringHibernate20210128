@@ -1,4 +1,4 @@
-package movieapp.entity;
+package movieapp.persistence.entity;
 
 import java.time.LocalDate;
 //import java.util.Date;

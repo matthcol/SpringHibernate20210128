@@ -15,9 +15,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import movieapp.entity.Movie;
-import movieapp.persistence.ArtistRepository;
-import movieapp.persistence.MovieRepository;
+import movieapp.persistence.entity.Movie;
+import movieapp.persistence.repository.ArtistRepository;
+import movieapp.persistence.repository.MovieRepository;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -65,7 +65,7 @@ class TestSpringQueries {
 
 	@Test
 	void test_statistics() {
-		var stats = movieRepository.statistics();
+		var stats = movieRepository.statisticsDto();
 		long nb_movies = stats.getCount();
 		int minYear = stats.getMinYear(); 
 		int maxYear = stats.getMaxYear();
@@ -102,7 +102,8 @@ class TestSpringQueries {
 		long threshold = 30;
 		artistRepository.statisticsByActor(threshold)
 			.forEach(as -> System.out.println(
-					"director: " + as.getArtist()
+					"director: " + as.getArtistId()
+					+ "#" + as.getArtistName()
 					+ " ; count: " + as.getCount()
 					+ " ; years: [" + as.getMinYear() 
 					+ "-"  + as.getMaxYear() + "]"));

@@ -21,8 +21,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import movieapp.dto.ArtistSimple;
-import movieapp.entity.Artist;
-import movieapp.persistence.ArtistRepository;
+import movieapp.persistence.entity.Artist;
+import movieapp.persistence.repository.ArtistRepository;
 import movieapp.service.IArtistService;
 
 //@ExtendWith(MockitoExtension.class)

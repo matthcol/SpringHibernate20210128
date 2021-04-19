@@ -22,10 +22,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import movieapp.dto.MovieStat;
+import movieapp.dto.MovieStatistics;
 import movieapp.dto.NameYearTitle;
-import movieapp.entity.Artist;
-import movieapp.entity.Movie;
+import movieapp.persistence.entity.Artist;
+import movieapp.persistence.entity.Movie;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE) // do not replace DB of app with H2 
@@ -205,7 +205,7 @@ class TestHibernateQueriesJPQL {
 	void test_movie_several_stats_as_dto() {
 		var res = entityManager.createQuery(
 				"select new movieapp.dto.MovieStat(count(*), min(m.year), max(m.year)) from Movie m",
-				MovieStat.class)
+				MovieStatistics.class)
 			.getSingleResult();
 		System.out.println("Movie stats: " + res); //  + " (" + res.getClass() +")");
 		long nb_movies = res.getCount();
